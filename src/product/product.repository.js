@@ -1,10 +1,10 @@
 const prisma = require("../db")
 
 
-const findProducts = async () => {
+const findAllProducts = async () => {
     return await prisma.product.findMany({
         include: {
-            kategori: true
+            category: true
         }
     })
 }
@@ -15,7 +15,7 @@ const findProductById = async (product_id) => {
             id: product_id
         },
         include: {
-            kategori: true
+            category: true
         }
     })
 }
@@ -23,12 +23,12 @@ const findProductById = async (product_id) => {
 const insertProduct = async (productData) => {
     return await prisma.product.create({
         data: {
-            nama: productData.nama,
-            diskripsi: productData.diskripsi,
-            gambar: productData.gambar,
-            harga: productData.harga,
-            stok: productData.stok,
-            kategori_id: productData.kategori_id
+            name: productData.name,
+            description: productData.description,
+            image: productData.image,
+            price: productData.price,
+            stock: productData.stock,
+            category_id: productData.category_id
         }
     })
 }
@@ -58,7 +58,7 @@ const deleteProduct = async (product_id) => {
 }
 
 module.exports = {
-    findProducts,
+    findAllProducts,
     findProductById,
     insertProduct,
     deleteProduct,

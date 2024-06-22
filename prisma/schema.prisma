@@ -14,25 +14,89 @@ datasource db {
 }
 
 // models
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  username     String        @unique
+  email        String        @unique
+  password     String
+  contact      String
+  address      String
+  isVerified   Boolean       @default(false)
+  role         Role          @default(user)
+  orders       Order[]
+  verification Verification?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+}
+
+enum Role {
+  user
+  admin
+}
+
+model Verification {
+  id        Int      @id @default(autoincrement())
+  kode      String
+  expiresAt DateTime
+  user_id   Int      @unique
+  user      User     @relation(fields: [user_id], references: [id])
+}
+
 model Category {
   id        Int       @id @default(autoincrement())
-  nama      String
-  produk    Product[]
+  name      String
+  products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  kategori_id Int
-  kategori    Category  @relation(fields: [kategori_id], references: [id])
-  nama        String
-  harga       Int
-  diskripsi   String?
-  gambar      String
-  stok        Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id          Int          @id @default(autoincrement())
+  category_id Int
+  category    Category     @relation(fields: [category_id], references: [id])
+  name        String
+  price       Int
+  description String?
+  image       String?
+  stock       Int
+  order_items Order_Item[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   deletedAt   DateTime?
+}
+
+model Order {
+  id               Int          @id @default(autoincrement())
+  user_id          Int
+  user             User         @relation(fields: [user_id], references: [id])
+  status           Status
+  payment_proof    String?
+  payment_verified Boolean      @default(false)
+  image            String?
+  size             String
+  total_amount     Int
+  order_items      Order_Item[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  deletedAt        DateTime?
+}
+
+enum Status {
+  pending
+  success
+  failed
+}
+
+model Order_Item {
+  id         Int       @id @default(autoincrement())
+  order_id   Int
+  order      Order     @relation(fields: [order_id], references: [id])
+  product_id Int
+  product    Product   @relation(fields: [product_id], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
 }

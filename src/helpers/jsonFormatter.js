@@ -12,7 +12,7 @@ const fail = (res, msg, data = null, code = 400) => res.json({
 
 const error = (res, err) => res.json({
     code: 500,
-    message: 'error',
+    message: 'Error',
     data: {
         name: err.name,
         message: err.message,

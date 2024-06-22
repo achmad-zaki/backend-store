@@ -1,10 +1,14 @@
-const { findProducts, findProductById, insertProduct, deleteProduct, updateProduct } = require("./product.repository")
-
+// repository
+const { findAllProducts,
+    findProductById,
+    insertProduct,
+    deleteProduct,
+    updateProduct
+} = require("./product.repository")
+// ==============================================================
 
 const getAllProducts = async () => {
-    const products = await findProducts()
-
-    return products
+    return await findAllProducts()
 }
 
 const getProductById = async (product_id) => {
@@ -14,6 +18,7 @@ const getProductById = async (product_id) => {
         return {
             type: "failed",
             message: "Data not found",
+            code: 404
         }
     }
 
@@ -28,16 +33,29 @@ const getProductById = async (product_id) => {
 const createProduct = async (newProductData) => {
     const data = await insertProduct(newProductData)
 
-    return data
+    const output = {
+        data: {
+            id: data.id,
+            name: data.name,
+            description: data.description,
+            image: data.image,
+            price: data.price,
+            stock: data.stock,
+            category_id: data.category_id
+        }
+    }
+
+    return output
 }
 
-const putProduct = async (product_id, newProductData) => {
+const putProductById = async (product_id, newProductData) => {
     const product = await findProductById(product_id)
 
     if (!product) {
         return {
             type: "failed",
             message: "Data not found",
+            code: 404
         }
     }
 
@@ -58,6 +76,7 @@ const deleteProductById = async (product_id) => {
         return {
             type: "failed",
             message: "Data not found",
+            code: 404
         }
     }
 
@@ -76,5 +95,5 @@ module.exports = {
     getProductById,
     createProduct,
     deleteProductById,
-    putProduct
+    putProductById
 }
